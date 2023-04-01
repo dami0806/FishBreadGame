@@ -28,6 +28,7 @@ class PlayViewController: UIViewController {
     
     
     
+    
     var mainTimer = Timer()
     var mainIsRun = false
     var mainTimeCount = 0
@@ -51,6 +52,11 @@ class PlayViewController: UIViewController {
     var life = 3
     var score = 0
     
+    
+    var leftImageView: UIImageView!
+    var rightImageView: UIImageView!
+    var centerImageView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         for i in 0...1{
@@ -70,11 +76,61 @@ class PlayViewController: UIViewController {
             giveButtons[1].layer.cornerRadius = 5
         }
         
+
+        let leftImageView = UIImageView(image: UIImage(named: "왼쪽start"))
+        let rightImageView = UIImageView(image: UIImage(named: "오른쪽start"))
+
+        let width: CGFloat = 200
+        let height: CGFloat = 200
+        let startX: CGFloat = (view.bounds.width - width) / 2.0
+        let startY: CGFloat = (view.bounds.height - height) / 2.0
+
+        // 처음 위치
+        leftImageView.frame = CGRect(x: -width, y: startY, width: width, height: height)
+        rightImageView.frame = CGRect(x: view.bounds.width, y: startY, width: width, height: height)
+
+        view.addSubview(leftImageView)
+        view.addSubview(rightImageView)
+
+        UIView.animate(withDuration: 1.0, animations: {
+            // 가운데로 모이기
+            leftImageView.frame = CGRect(x: startX - 100, y: startY - 50, width: width, height: height)
+            rightImageView.frame = CGRect(x: startX + 100, y: startY - 50, width: width, height: height)
+
+       
+
+        }) { _ in
+            UIView.animate(withDuration: 0.5, animations: {
+       
+                leftImageView.transform = CGAffineTransform(translationX: 0, y: 20)
+                rightImageView.transform = CGAffineTransform(translationX: 0, y: 20)
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.5, animations: {
+              
+                    leftImageView.transform = CGAffineTransform(translationX: 0, y: -20)
+                    rightImageView.transform = CGAffineTransform(translationX: 0, y: -20)
+                }, completion: { _ in
+                    UIView.animate(withDuration: 1.0, animations: {
+                        
+                        leftImageView.frame = CGRect(x: -width, y: startY, width: width, height: height)
+                        rightImageView.frame = CGRect(x: self.view.bounds.width, y: startY, width: width, height: height)
+                    }, completion: { _ in
+                        
+                        leftImageView.removeFromSuperview()
+                        rightImageView.removeFromSuperview()
+                    })
+                })
+            })
+        }
+       
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        startMainTimer()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+              self.startMainTimer()
+          }
     }
     
     
