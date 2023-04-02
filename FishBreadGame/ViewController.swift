@@ -12,7 +12,10 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
+           backgroundImage.image = UIImage(named: "home배경")
+           backgroundImage.contentMode =  UIView.ContentMode.scaleAspectFill
+           self.view.insertSubview(backgroundImage, at: 0)
         
     }
 

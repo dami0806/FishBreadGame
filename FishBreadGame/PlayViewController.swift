@@ -8,7 +8,7 @@
 import UIKit
 
 class PlayViewController: UIViewController {
-    @IBOutlet weak var scoreViewRound: UIView!
+  //  @IBOutlet weak var scoreViewRound: UIView!
     
     
     
@@ -63,7 +63,7 @@ class PlayViewController: UIViewController {
             
             orderView[i].isHidden = true
             
-            scoreViewRound.layer.cornerRadius = 8
+//            scoreViewRound.layer.cornerRadius = 8
             orderView[0].layer.cornerRadius = 5
             orderView[1].layer.cornerRadius = 5
             
@@ -242,20 +242,13 @@ class PlayViewController: UIViewController {
         
     }
     func allReset(action: UIAlertAction) {
-        //Use action.title
         life = 3
         setLife()
         
         //점수
         score = 0
-        
-        // 점수와 같은 변수들을 초기화
-        score = 0
-        
-        
         for i in 0...1{
             initOrders(i)
-            
         }
         
         for i in 0...fishButtons.count-1{
@@ -267,8 +260,7 @@ class PlayViewController: UIViewController {
         scoreLabel.text = "\(score)"
         startMainTimer()
         initBag()
-        
-        
+
     }
     
     @IBAction func pressedToolButton(_ sender: UIButton) {
