@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SpriteKit
 
 class PlayViewController: UIViewController {
   //  @IBOutlet weak var scoreViewRound: UIView!
@@ -206,6 +207,8 @@ class PlayViewController: UIViewController {
     }
     
     func finishGame() {
+        
+        
         mainTimer.invalidate()
         mainIsRun = false
         mainTimeCount = 0
