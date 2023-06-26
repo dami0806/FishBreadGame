@@ -22,7 +22,10 @@ class ViewController: UIViewController {
 
     @IBAction func gameButtonTapped(_ sender: UIButton) {
       
-        
+        let backButton = UIBarButtonItem()
+           backButton.title = ""
+           navigationItem.backBarButtonItem = backButton
+           
         guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "PlayViewController") as? PlayViewController else { return }
               self.navigationController?.pushViewController(nextVC, animated: true)
     }
@@ -31,7 +34,6 @@ class ViewController: UIViewController {
     @IBAction func howToButtonTapped(_ sender: UIButton) {
         
         guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "HowtoViewController") as? HowtoViewController else { return }
-       // nextVC.modalPresentationStyle = UIModalPresentationStyle.fullScreen
                present(nextVC, animated: true, completion: nil)
                
                

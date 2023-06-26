@@ -7,9 +7,8 @@
 
 import UIKit
 import SpriteKit
-
+import Lottie
 class PlayViewController: UIViewController {
-  //  @IBOutlet weak var scoreViewRound: UIView!
     
     
     
@@ -57,24 +56,24 @@ class PlayViewController: UIViewController {
     var leftImageView: UIImageView!
     var rightImageView: UIImageView!
     var centerImageView: UIImageView!
+    var animationViews: [LottieAnimationView] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         for i in 0...1{
             
             orderView[i].isHidden = true
-            
-//            scoreViewRound.layer.cornerRadius = 8
-            orderView[0].layer.cornerRadius = 5
-            orderView[1].layer.cornerRadius = 5
-            
-            orderView[0].layer.borderWidth = 1
-            orderView[0].layer.borderColor = UIColor.systemGray5.cgColor
-            orderView[1].layer.borderWidth = 1
-            orderView[1].layer.borderColor = UIColor.systemGray5.cgColor
-            
+
             giveButtons[0].layer.cornerRadius = 5
             giveButtons[1].layer.cornerRadius = 5
+            self.settingLottie(index: 0, emotion: "happyCat")
+            self.settingLottie(index: 1, emotion: "happyCat")
+            navigationController?.navigationBar.tintColor = .white
+            let backButton = UIBarButtonItem()
+                backButton.title = ""
+                
+
+
         }
         
 
@@ -122,17 +121,49 @@ class PlayViewController: UIViewController {
                     })
                 })
             })
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                       self.startMainTimer()
+                
+                      
+                   }
         }
        
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    // Mark: Lottie
+    func settingLottie(index: Int, emotion: String) {
+        let animationView: LottieAnimationView
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-              self.startMainTimer()
-          }
+        guard index >= 0 && index < orderView.count else {
+            return
+        }
+        
+        let view = orderView[index]
+        
+        
+        if let previousAnimationView = view.subviews.compactMap({ $0 as? LottieAnimationView }).first {
+            previousAnimationView.removeFromSuperview()
+            if let indexToRemove = animationViews.firstIndex(of: previousAnimationView) {
+                animationViews.remove(at: indexToRemove)
+            }
+        }
+        
+        if emotion == "happyCat" {
+            animationView = LottieAnimationView(name: "happyCat")
+        } else {
+            animationView = LottieAnimationView(name: "cryingCat")
+        }
+        
+        animationView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height-30)
+        animationView.contentMode = .scaleAspectFill
+        animationView.loopMode = .loop
+        animationView.play()
+        
+        animationViews.append(animationView)
+        view.addSubview(animationView)
     }
+
+
     
     
     func startMainTimer() {
@@ -149,7 +180,7 @@ class PlayViewController: UIViewController {
             self.orderAmount[orderIndex] = orderAmount
             DispatchQueue.main.async {
                 self.orderView[orderIndex].isHidden = false
-                self.orderLabel[orderIndex].text = String(orderAmount)
+                self.orderLabel[orderIndex].text = "붕어빵 \(orderAmount)개 주세요!"
             }
             DispatchQueue.global().async {
                 self.orderLevel[orderIndex] = 0
@@ -172,12 +203,14 @@ class PlayViewController: UIViewController {
             return
         }
         orderTimeCount[index] += 1
-        if orderTimeCount[index] >= 20 {
+        if orderTimeCount[index] >= 30 {
             orderAmount[index] = -1
             orderLevel[index] = -1
             DispatchQueue.main.async {
-                self.orderView[index].backgroundColor = .white
+              //  self.orderView[index].backgroundColor = .white
                 self.orderView[index].isHidden = true
+                self.settingLottie(index: index, emotion: "happyCat")
+
                 
             }
             self.life -= 1
@@ -185,10 +218,11 @@ class PlayViewController: UIViewController {
             orderTimeCount[index] = 0
             orderTimer[index].invalidate()
             orderIsRun[index] = false
-        } else if orderTimeCount[index] >= 10 {
+        } else if orderTimeCount[index] >= 18 {
             orderLevel[index] = 1
             DispatchQueue.main.async {
-                self.orderView[index].backgroundColor = .red
+                self.settingLottie(index: index, emotion: "cryingCat")
+                
             }
         }
     }
@@ -205,7 +239,7 @@ class PlayViewController: UIViewController {
             self.lifeLabel.text = lifeLabel
         }
     }
-    
+  
     func finishGame() {
         
         
@@ -410,7 +444,7 @@ class PlayViewController: UIViewController {
     }
     
     func initOrders(_ index: Int) {
-        orderView[index].backgroundColor = .white
+        self.settingLottie(index: index, emotion: "happyCat")
         orderView[index].isHidden = true
         orderLevel[index] = -1
         orderAmount[index] = -1

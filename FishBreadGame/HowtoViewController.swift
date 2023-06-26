@@ -6,117 +6,94 @@
 //
 
 import UIKit
-
+import Lottie
 class HowtoViewController: UIViewController {
 
+    @IBOutlet weak var howTo1: UIView!
+    @IBOutlet weak var howTo2: UIView!
+    @IBOutlet weak var howTo3: UIView!
+    @IBOutlet weak var howTo4: UIView!
     
-    @IBOutlet weak var Howto1: UIImageView!
-    @IBOutlet weak var next1: UIImageView!
-    @IBOutlet weak var Howto2: UIImageView!
-    @IBOutlet weak var next2: UIImageView!
-    @IBOutlet weak var Howto3: UIImageView!
-    @IBOutlet weak var next3: UIImageView!
-    @IBOutlet weak var Howto4: UIImageView!
+  
+    
+    private var currentStep: Int = 1
+    override func viewWillAppear(_ animated: Bool) {
+        // 배경 이미지 설정
+        let backgroundImage = UIImage(named: "background")
+        let backgroundImageView = UIImageView(image: backgroundImage)
+        backgroundImageView.frame = view.bounds
+        backgroundImageView.contentMode = .scaleAspectFill
+        view.addSubview(backgroundImageView)
+        view.sendSubviewToBack(backgroundImageView)
+    }
+       override func viewDidLoad() {
+           super.viewDidLoad()
+           howTo1.isHidden = false
+           howTo2.isHidden = true
+           howTo3.isHidden = true
+           howTo4.isHidden = true
+           addLottieAnimation(to: howTo1)
+           addTapGesture(to: howTo1, step: 1)
+           addTapGesture(to: howTo2, step: 2)
+           addTapGesture(to: howTo3, step: 3)
+       }
+       
+       private func addLottieAnimation(to view: UIView) {
+           let animationView = LottieAnimationView(name: "arrow-right")
+           animationView.frame = CGRect(x: view.bounds.width-70, y:view.bounds.height-80 , width: 60, height: 60)
+
+           animationView.contentMode = .scaleAspectFit
+           animationView.loopMode = .loop
+           animationView.animationSpeed = 1.0
+           animationView.play()
+           
+           view.addSubview(animationView)
+       }
+       
+       private func addTapGesture(to view: UIView, step: Int) {
+           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(animationTapped(_:)))
+           view.isUserInteractionEnabled = true
+           view.tag = step
+           view.addGestureRecognizer(tapGesture)
+       }
+       
+       @objc private func animationTapped(_ sender: UITapGestureRecognizer) {
+           if let view = sender.view, view.tag == currentStep {
+               showNextStep()
+           }
+       }
+       
+       private func showNextStep() {
+           currentStep += 1
+           
+           switch currentStep {
+           case 2:
+               howTo1.isHidden = true
+               howTo2.isHidden = false
+               howTo3.isHidden = true
+               howTo4.isHidden = true
+               addLottieAnimation(to: howTo2)
+           case 3:
+               howTo1.isHidden = true
+               howTo2.isHidden = true
+               howTo3.isHidden = false
+               howTo4.isHidden = true
+               addLottieAnimation(to: howTo3)
+           case 4:
+               howTo1.isHidden = true
+               howTo2.isHidden = true
+               howTo3.isHidden = true
+               howTo4.isHidden = false
+               addLottieAnimation(to: howTo4)
+               addTapGesture(to: howTo4, step: 4)
+           default:
+                       backToHome()
+                   }
+               }
+
+               @objc private func backToHome() {
+                   dismiss(animated: true, completion: nil)
+               }
+           }
+       
    
-    @IBOutlet weak var next4: UIImageView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    
-        Howto1.isHidden = false
-        Howto2.isHidden = true
-        Howto3.isHidden = true
-        Howto4.isHidden = true
-        next1.isHidden = true
-        next2.isHidden = true
-        next3.isHidden = true
-        next4.isHidden = true
-      
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                  self.Howto1.isHidden = false
-                  self.next1.isHidden = false
-              }
-        
-        
-        let next1TapGesture = UITapGestureRecognizer(target: self, action: #selector(showHowto2))
-        
-        next1.isUserInteractionEnabled = true
-        next1.addGestureRecognizer(next1TapGesture)
-        
-        let next2TapGesture = UITapGestureRecognizer(target: self, action: #selector(showHowto3))
-        next2.isUserInteractionEnabled = true
-        next2.addGestureRecognizer(next2TapGesture)
-        
-        let next3TapGesture = UITapGestureRecognizer(target: self, action: #selector(showHowto4))
-        next3.isUserInteractionEnabled = true
-        next3.addGestureRecognizer(next3TapGesture)
-        
-        let next4TapGesture = UITapGestureRecognizer(target: self, action: #selector(backToHome))
-        next4.isUserInteractionEnabled = true
-        next4.addGestureRecognizer(next4TapGesture)
-        
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        moveNextUpAndDown()
-        
-    }
-    func moveNextUpAndDown() {
-        UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: [.repeat, .autoreverse, .allowUserInteraction], animations: {
-            self.next1.transform = CGAffineTransform(translationX: 0, y: -10)
-            self.next2.transform = CGAffineTransform(translationX: 0, y: -10)
-            self.next3.transform = CGAffineTransform(translationX: 0, y: -10)
-            self.next4.transform = CGAffineTransform(translationX: 0, y: -10)
-        })
-    }
-//    func moveNextUpAndDown() {
-//        UIView.animate(withDuration: 1.0, animations: {
-//            self.next1.transform = CGAffineTransform(translationX: 0, y: -10)
-//            self.next2.transform = CGAffineTransform(translationX: 0, y: -10)
-//            self.next3.transform = CGAffineTransform(translationX: 0, y: -20)
-//            self.next4.transform = CGAffineTransform(translationX: 0, y: -20)
-//        }, completion: { _ in
-//            UIView.animate(withDuration: 1.0, animations: {
-//                self.next1.transform = CGAffineTransform(translationX: 0, y: 10)
-//                self.next2.transform = CGAffineTransform(translationX: 0, y: 10)
-//                self.next3.transform = CGAffineTransform(translationX: 0, y: 10)
-//                self.next4.transform = CGAffineTransform(translationX: 0, y: 10)
-//            }, completion: { _ in
-//                self.moveNextUpAndDown()
-//            })
-//        })
-//    }
-    @objc func showHowto2(_ sender:UITapGestureRecognizer){
-        Howto1.isHidden = true
-        next1.isHidden = true
-        Howto2.isHidden = false
-        next2.isHidden = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-              self.next2.isHidden = false
-          }
-    }
-    @objc func showHowto3(_ sender:UITapGestureRecognizer){
-        Howto2.isHidden = true
-        next2.isHidden = true
-        Howto3.isHidden = false
-        next3.isHidden = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-              self.next3.isHidden = false
-          }
-    }
-    @objc func showHowto4(_ sender:UITapGestureRecognizer){
-        Howto3.isHidden = true
-        next3.isHidden = true
-        Howto4.isHidden = false
-        next4.isHidden = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-              self.next4.isHidden = false
-          }
-       
-    }
-    @objc func backToHome(_ sender:UITapGestureRecognizer){
-     dismiss(animated: true)
-       
-    }
-    
-}
