@@ -176,7 +176,7 @@ class PlayViewController: UIViewController {
         let isOrderEnabled = Bool.random()
         let orderIndex = Int.random(in: 0...1)
         if isOrderEnabled && orderLevel[orderIndex] == -1 {
-            let orderAmount = Int.random(in: 1...6)
+            let orderAmount = Int.random(in: 1...4)
             self.orderAmount[orderIndex] = orderAmount
             DispatchQueue.main.async {
                 self.orderView[orderIndex].isHidden = false
@@ -381,6 +381,7 @@ class PlayViewController: UIViewController {
                     bagLabelInt += 1
                     bagLabel.text = String(bagLabelInt)
                 }
+                
                 initFish(index)
             }
             
@@ -402,10 +403,11 @@ class PlayViewController: UIViewController {
             fishIsBurn[index] = false
         } else {
             fishIsBurn[index] = true
-            if fishLevel[index] == 3 {
+            
                 DispatchQueue.main.async {
                     self.fishButtons[index].setImage(UIImage(named: "붕어빵3-4"), for: .normal)
-                }
+                    self.fishLevel[index] = 4
+                
             }
         }
     }
