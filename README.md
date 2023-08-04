@@ -1,14 +1,59 @@
-# FishBreadGame
-![Simulator Screen Recording - iPhone 14 Pro - 2023-06-26 at 21 21 49](https://github.com/dami0806/FishBreadGame/assets/85047035/9bcab218-e6b9-43c0-8dc6-200460cb862b)
+# 붕어빵 타이쿤 게임 (Fish Bread Tycoon Game)
 
-![Simulator Screen Recording - iPhone 14 Pro - 2023-06-26 at 21 30 06](https://github.com/dami0806/FishBreadGame/assets/85047035/50e15aed-6ede-4ad0-8add-923babda584b)
 
-![Simulator Screen Recording - iPhone 14 Pro - 2023-06-26 at 21 34 51](https://github.com/dami0806/FishBreadGame/assets/85047035/ea6fa52e-f01d-4e76-b737-cf285b58979b)
 
-![Simulator Screen Recording - iPhone 14 Pro - 2023-06-26 at 21 35 09](https://github.com/dami0806/FishBreadGame/assets/85047035/ad541ac9-7752-4230-b126-ba9d9b107ef1)
+이 프로젝트는 iOS 게임 어플리케이션인 "붕어빵 타이쿤 게임"의 소스 코드를 담고 있습니다.
+주요 목표는 Thread를 이용한 게임 프로그래밍을 학습하고 적용하는 것입니다. 주로 붕어빵 만들기 게임을 플레이하며, 멀티스레딩을 활용하여 게임의 성능을 향상시키는 것입니다.
 
-![Simulator Screen Recording - iPhone 14 Pro - 2023-06-26 at 21 40 12](https://github.com/dami0806/FishBreadGame/assets/85047035/043c38dc-baa3-41d4-af37-bd0fd494a3ae)
 
-![Simulator Screen Recording - iPhone 14 Pro - 2023-06-26 at 21 42 13](https://github.com/dami0806/FishBreadGame/assets/85047035/668f4eb4-46ab-42e5-876d-c6d35cf5bb43)
+## 게임 소개
 
-![Simulator Screen Recording - iPhone 14 Pro - 2023-06-26 at 21 31 43](https://github.com/dami0806/FishBreadGame/assets/85047035/f6d5bc40-feb5-4383-a312-89f364a95890)
+"붕어빵 타이쿤 게임"은 간단하고 중독성 있는 게임플레이로 구성되어 있습니다. 플레이어는 주어진 주문에 맞게 붕어빵을 구워서 팥을 추가해야 합니다. 주문 처리에 성공하면 보너스 점수를 얻고, 시간을 초과하여 주문 처리에 실패한다면 생명이 감소할 수 있습니다. 최대한 많은 주문을 처리하고 높은 점수를 목표로 해보세요!
+
+## 기능과 특징
+
+- 게임플레이: 주전자를 사용하여 반죽을 구우고, 팥으로 채워진 붕어빵을 만들며, 뒤집어 완성시킵니다. 반죽을 붓는 순간부터 타이머가 작동합니다.
+- 주문 시스템: 게임 중 무작위로 주문이 생성되며, 특정 주문에 맞는 붕어빵을 만들어 제공해야 추가 점수를 획득합니다.
+- 생명 및 점수: 게임은 생명과 점수 시스템을 갖추고 있습니다. 틀린 붕어빵을 만들거나 주문을 제때 완료하지 못하면 생명이 감소하고, 생명이 0이 되면 게임이 종료됩니다. 점수는 주문을 성공적으로 완료하거나 특정 조건을 만족했을 때 증가합니다.
+- 애니메이션: Lottie를 사용하여 붕어빵과 고양이 캐릭터들을 생동감 있게 표현했습니다.
+- 멀티스레딩 적용: 게임 로직과 애니메이션 처리를 다중 스레드를 활용하여 동시에 처리합니다.
+
+## 프로젝트 구성
+
+- `PlayViewController`: 주요 게임 로직을 담당하는 뷰 컨트롤러입니다.
+- `HowtoViewController`: 게임 튜토리얼 화면을 보여주는 뷰 컨트롤러입니다.
+- `ViewController`: 게임 시작 화면과 튜토리얼 진입 버튼이 있는 뷰 컨트롤러입니다.
+
+## 멀티스레딩 구현
+스레드 관리
+각 스레드는 자체적으로 타이머를 사용하여 주기적으로 작업을 수행합니다. 주문 타이머 스레드는 고객 주문이 발생하면 주문 시간을 카운트하고, 각 붕어빵 스레드는 붕어빵들의 상태를 업데이트합니다. 주문 타이머 스레드와 떨어지는 붕어빵 스레드는 별도의 루프에서 실행되기 때문에 서로에게 영향을 미치지 않습니다.
+
+- mainTimer와 countMainTime: startMainTimer 함수에서 주어진 시간 간격마다 countMainTime 함수가 호출되어 게임의 시간을 측정하고 주문 시스템을 무작위로 활성화합니다.
+
+- orderTimer와 countOrderTime: 주문이 들어왔을 때 orderTimer가 시작되며, 1초마다 countOrderTime 함수가 호출되어 주문이 제한 시간 내에 완료되었는지 확인합니다.
+
+- fishTimer와 fishTimecount: fishButtonTapped 함수에서 붕어빵을 구울 때 스레드를 생성하여 fishTimecount 함수가 호출되며, 익는 시간을 측정하여 일정 시간 이상 익은 붕어빵은 뒤집어서 완성 상태로 만듭니다.
+
+
+1. 주문 타이머 스레드
+고객의 주문을 관리하는 주문 타이머는 별도의 스레드에서 동작합니다. 주문 타이머 스레드는 백그라운드에서 주문 시간을 카운트하고, 주문이 완료되거나 시간이 초과될 때 해당 주문을 관리합니다. 이렇게 함으로써, 메인 스레드는 주문 타이머의 시간 카운트와 관련된 작업으로 인해 느려지거나 멈추지 않고, 게임 플레이가 부드러워집니다.
+
+2. 각 9개의 붕어빵 스레드
+떨어지는 붕어빵들도 각각 별도의 스레드에서 동작합니다. 이 스레드들은 붕어빵들의 위치, 상태 등을 관리합니다. 각 붕어빵의 스레드는 메인 스레드와 독립적으로 동작하며, 게임의 다른 요소들과 상호작용하면서 게임 플레이의 자연스러운 애니메이션을 유지합니다.
+
+
+
+## 활용 기술
+
+- Swift, UIKit
+- Lottie
+
+## 데모
+| 화면          | 데모화면                                      |
+|-------------|--------------------------------------------|
+| 게임방법 화면    | <img src="https://github.com/dami0806/FishBreadGame/assets/85047035/9bcab218-e6b9-43c0-8dc6-200460cb862b" width="150" height="280">|
+| 게임시작 화면    | <img src="https://github.com/dami0806/FishBreadGame/assets/85047035/50e15aed-6ede-4ad0-8add-923babda584b" width="150" height="280">|
+| 게임중 화면    | <img src="https://github.com/dami0806/FishBreadGame/assets/85047035/ea6fa52e-f01d-4e76-b737-cf285b58979b" width="150" height="280">  <img src="https://github.com/dami0806/FishBreadGame/assets/85047035/ad541ac9-7752-4230-b126-ba9d9b107ef1" width="150" height="280">  <img src="https://github.com/dami0806/FishBreadGame/assets/85047035/043c38dc-baa3-41d4-af37-bd0fd494a3ae " width="150" height="280">|
+| 게임종료<br>-다시하기  |<img src="https://github.com/dami0806/FishBreadGame/assets/85047035/f6d5bc40-feb5-4383-a312-89f364a95890" width="150" height="280"> <img src="https://github.com/dami0806/FishBreadGame/assets/85047035/668f4eb4-46ab-42e5-876d-c6d35cf5bb43" width="150" height="280"> |
+
+
